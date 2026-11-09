@@ -17,3 +17,7 @@ Recibo 500 y {"error":"Error interno del servidor"}. El ping de /api/health fall
 ## Pregunta 2: los números de la URL
 
 Los query params llegan como texto: con find(req.query), price=380 busca la cadena "380", pero MongoDB guarda el precio como el número 380. Por eso construimos los filtros permitidos y convertimos maxPrice a número antes de consultar.
+
+## Pregunta 3: campos controlados por la API
+
+La API fija views y status para que todos los anuncios empiecen con 0 visitas y AVAILABLE. Si aceptara esos campos del cliente, alguien podría inflar sus visitas o publicar directamente un anuncio como SOLD o RESERVED sin seguir las reglas de la aplicación.

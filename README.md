@@ -1019,3 +1019,15 @@ curl 'http://localhost:3000/api/listings?category=Phones&city=Valencia&maxPrice=
 ```
 
 Con los datos iniciales devuelve el Xiaomi y el iPhone. Sin filtros devuelve los ocho anuncios. Se mantienen los campos resumidos y el orden por fecha; los parámetros que no están permitidos se ignoran. Los filtros de categoría y ciudad solo se aplican cuando el valor recibido es un texto.
+
+## Publicar un anuncio (Parte 4)
+
+`POST /api/listings` recibe JSON con `title`, `description`, `category` y `city` como textos no vacíos, `price` como número finito mayor o igual que cero y `sellerId` como ObjectId de un usuario existente. `attributes` es opcional y debe ser un objeto; si se omite, se guarda `{}`.
+
+```bash
+curl -X POST http://localhost:3000/api/listings \
+  -H 'Content-Type: application/json' \
+  -d '{"title":"Bicicleta de montaña Orbea","description":"Revisada en taller.","price":300,"category":"Sports","city":"Castellón","sellerId":"660000000000000000000004","attributes":{"size":"L","type":"mountain","wheelInches":29}}'
+```
+
+Responde `201` con el anuncio y su `_id`. La API fija `status: "AVAILABLE"`, `views: 0`, `photos: []` y la fecha actual; copia el identificador y nombre del vendedor desde `users`. Ignora los demás campos del cliente, incluidos intentos de enviar un `_id`, estado, visitas o vendedor alternativos. Los datos inválidos devuelven `400` en JSON, también cuando el sellerId tiene formato correcto pero no existe.

@@ -25,3 +25,11 @@ La API fija views y status para que todos los anuncios empiecen con 0 visitas y 
 ## Pregunta 4: precio copiado en las ofertas
 
 No: el PATCH cambia el precio actual del anuncio, pero la oferta conserva el precio que tenía cuando se creó. Cambiar esa copia alteraría el contexto histórico en el que Sara hizo su oferta.
+
+## Pregunta 5: oferta sobre un anuncio vendido
+
+Es 409 porque los datos de la petición son válidos, pero la oferta entra en conflicto con el estado actual del anuncio, que ya está vendido. Un 400 indica que los datos enviados son incorrectos.
+
+## Pregunta 6: comprobaciones de MongoDB y de la API
+
+MongoDB garantiza la unicidad mediante los índices, por ejemplo no permite dos usuarios con el mismo email gracias al índice único creado. La API debe validar las reglas que la base no comprueba por sí sola, por ejemplo que el comprador exista, que amount sea un número positivo y que el anuncio esté AVAILABLE.

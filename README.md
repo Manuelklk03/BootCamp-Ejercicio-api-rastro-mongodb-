@@ -1044,3 +1044,19 @@ curl -X PATCH http://localhost:3000/api/listings/670000000000000000000005 \
 `DELETE /api/listings/:id` borra ese anuncio y devuelve `204` sin cuerpo. Una segunda petición al mismo ID devuelve `404`. Este borrado elimina únicamente el anuncio, sin borrar ofertas ni otras referencias.
 
 Ambas rutas devuelven `400` para un ID mal formado y `404` para un ID válido inexistente. En PATCH, un precio ausente o inválido devuelve `400`.
+
+## Ofertas (Parte 6)
+
+`POST /api/offers` crea una oferta:
+
+```bash
+curl -X POST http://localhost:3000/api/offers \
+  -H 'Content-Type: application/json' \
+  -d '{"listingId":"670000000000000000000008","buyerId":"660000000000000000000002","amount":100}'
+```
+
+La API comprueba, en este orden: formato de los dos IDs, importe numérico finito mayor que cero, existencia del anuncio, existencia del comprador y estado AVAILABLE. Los datos inválidos y las referencias inexistentes del body devuelven `400`; un anuncio vendido o reservado devuelve `409`.
+
+Si todo es correcto, responde `201` con la oferta y su `_id`. La API fija `status: "PENDING"`, la fecha actual y las copias `listing: { id, title, price }` y `buyer: { id, name }` usando los documentos de MongoDB; ignora campos adicionales del cliente.
+
+`GET /api/listings/:id/offers` devuelve `200` con las ofertas de ese anuncio, o un array vacío si aún no tiene. Un ID mal formado devuelve `400`; un anuncio inexistente devuelve `404`. Consultar sus ofertas no incrementa las visitas del anuncio.

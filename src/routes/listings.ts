@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ObjectId } from "mongodb";
 import type { Filter } from "mongodb";
 import type { Listing } from "../types";
-import { listingsCollection, usersCollection } from "../db";
+import { listingsCollection, offersCollection, usersCollection } from "../db";
 
 const router = Router();
 
@@ -89,6 +89,23 @@ router.post("/", async (req, res) => {
 
   const result = await listingsCollection().insertOne(listing);
   res.status(201).json({ ...listing, _id: result.insertedId });
+});
+
+router.get("/:id/offers", async (req, res) => {
+  const { id } = req.params;
+  if (!ObjectId.isValid(id)) {
+    res.status(400).json({ error: "El id no tiene un formato válido" });
+    return;
+  }
+
+  const listing = await listingsCollection().findOne({ _id: new ObjectId(id) });
+  if (!listing) {
+    res.status(404).json({ error: "No existe ningún anuncio con ese id" });
+    return;
+  }
+
+  const offers = await offersCollection().find({ "listing.id": listing._id }).toArray();
+  res.json(offers);
 });
 
 router.get("/:id", async (req, res) => {

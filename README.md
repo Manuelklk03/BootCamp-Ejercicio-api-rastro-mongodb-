@@ -1003,3 +1003,19 @@ curl http://localhost:3000/api/listings/670000000000000000000003
 - `GET /api/listings`: devuelve `_id`, `title`, `price`, `category`, `city` y `status`, con los anuncios más recientes primero. No incrementa visitas.
 - `GET /api/listings/:id`: devuelve la ficha completa y suma una visita con `$inc`. Con los datos iniciales, el iPhone pasa de 512 a 513 visitas en la primera consulta y a 514 en la segunda.
 - Un ID mal formado devuelve `400`; un ID válido sin anuncio devuelve `404`. Los errores mantienen el formato JSON `{ "error": "mensaje" }`.
+
+## Filtros de anuncios (Parte 3)
+
+`GET /api/listings` acepta filtros opcionales y combinables:
+
+| Parámetro | Comportamiento |
+| --- | --- |
+| `category` | Coincidencia exacta con la categoría, respetando mayúsculas. |
+| `city` | Coincidencia exacta con la ciudad. |
+| `maxPrice` | Precio menor o igual al número indicado. Un valor inválido, vacío, repetido o no finito devuelve `400`. |
+
+```bash
+curl 'http://localhost:3000/api/listings?category=Phones&city=Valencia&maxPrice=400'
+```
+
+Con los datos iniciales devuelve el Xiaomi y el iPhone. Sin filtros devuelve los ocho anuncios. Se mantienen los campos resumidos y el orden por fecha; los parámetros que no están permitidos se ignoran. Los filtros de categoría y ciudad solo se aplican cuando el valor recibido es un texto.

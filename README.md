@@ -990,3 +990,16 @@ Antes de subir cambios: `npm run lint` y `npm run typecheck`.
 La Parte 1 añade registro de peticiones, lectura de JSON, respuesta JSON para rutas inexistentes (404) y manejo de errores (400 para JSON inválido, 500 genérico para errores internos). La API empieza a escuchar después de conectar con MongoDB y el ping de health comprueba que la base responde.
 
 En esta ejecución se conservaron las colecciones anteriores en español y se cargaron las nuevas en inglés, sin ejecutar `dropDatabase()`. La API utiliza únicamente `users`, `listings` y `offers`; también se cargó `reviews` para los datos de la entrega.
+
+## Consulta de anuncios (Parte 2)
+
+Con la API arrancada con `npm run dev`:
+
+```bash
+curl http://localhost:3000/api/listings
+curl http://localhost:3000/api/listings/670000000000000000000003
+```
+
+- `GET /api/listings`: devuelve `_id`, `title`, `price`, `category`, `city` y `status`, con los anuncios más recientes primero. No incrementa visitas.
+- `GET /api/listings/:id`: devuelve la ficha completa y suma una visita con `$inc`. Con los datos iniciales, el iPhone pasa de 512 a 513 visitas en la primera consulta y a 514 en la segunda.
+- Un ID mal formado devuelve `400`; un ID válido sin anuncio devuelve `404`. Los errores mantienen el formato JSON `{ "error": "mensaje" }`.

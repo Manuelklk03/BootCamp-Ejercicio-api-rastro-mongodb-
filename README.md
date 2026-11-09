@@ -974,3 +974,19 @@ Para quien termine antes. Cada uno en su rama `feature/...` y con su PR.
 - [Instrucciones del CI mínimo (con capturas)](https://github.com/TheBridge-FullStackDeveloper/temario_fullstack_FT_LABORA_sept26/tree/master/sesiones/devops/instrucciones_ci)
 
 Si usas IA para resolver dudas, pídele que te **explique** el error o te dé una **pista**, no la ruta entera. En la corrección tendrás que saber explicar cada comprobación que hace tu código.
+
+## Puesta en marcha de la implementación (Partes 0 y 1)
+
+Necesitas Node.js 24 y el contenedor `mongodb-practica` configurado como indica el apartado 1.1.
+
+1. Ejecuta `npm ci`.
+2. Copia `.env.example` a `.env` y completa la URI con las credenciales de tu MongoDB local. No subas `.env` a Git.
+3. Ejecuta `docker start mongodb-practica` y carga los datos e índices del apartado 1.1 si aún no los tienes.
+4. Arranca la API con `npm run dev`.
+5. Pide `GET http://localhost:3000/api/health`: debe devolver `200` y `{"status":"ok","db":"rastro"}`.
+
+Antes de subir cambios: `npm run lint` y `npm run typecheck`.
+
+La Parte 1 añade registro de peticiones, lectura de JSON, respuesta JSON para rutas inexistentes (404) y manejo de errores (400 para JSON inválido, 500 genérico para errores internos). La API empieza a escuchar después de conectar con MongoDB y el ping de health comprueba que la base responde.
+
+En esta ejecución se conservaron las colecciones anteriores en español y se cargaron las nuevas en inglés, sin ejecutar `dropDatabase()`. La API utiliza únicamente `users`, `listings` y `offers`; también se cargó `reviews` para los datos de la entrega.

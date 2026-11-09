@@ -21,3 +21,7 @@ Los query params llegan como texto: con find(req.query), price=380 busca la cade
 ## Pregunta 3: campos controlados por la API
 
 La API fija views y status para que todos los anuncios empiecen con 0 visitas y AVAILABLE. Si aceptara esos campos del cliente, alguien podría inflar sus visitas o publicar directamente un anuncio como SOLD o RESERVED sin seguir las reglas de la aplicación.
+
+## Pregunta 4: precio copiado en las ofertas
+
+No: el PATCH cambia el precio actual del anuncio, pero la oferta conserva el precio que tenía cuando se creó. Cambiar esa copia alteraría el contexto histórico en el que Sara hizo su oferta.

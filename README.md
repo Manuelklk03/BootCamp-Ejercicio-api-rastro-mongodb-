@@ -1031,3 +1031,16 @@ curl -X POST http://localhost:3000/api/listings \
 ```
 
 Responde `201` con el anuncio y su `_id`. La API fija `status: "AVAILABLE"`, `views: 0`, `photos: []` y la fecha actual; copia el identificador y nombre del vendedor desde `users`. Ignora los demás campos del cliente, incluidos intentos de enviar un `_id`, estado, visitas o vendedor alternativos. Los datos inválidos devuelven `400` en JSON, también cuando el sellerId tiene formato correcto pero no existe.
+
+## Cambiar el precio y borrar (Parte 5)
+
+`PATCH /api/listings/:id` recibe `{ "price": 80 }`: exige un número finito mayor o igual que cero, ignora los demás campos y responde `200` con el anuncio actualizado. Usa `$set` y no incrementa visitas ni cambia los precios copiados en las ofertas.
+
+```bash
+curl -X PATCH http://localhost:3000/api/listings/670000000000000000000005 \
+  -H 'Content-Type: application/json' -d '{"price":80}'
+```
+
+`DELETE /api/listings/:id` borra ese anuncio y devuelve `204` sin cuerpo. Una segunda petición al mismo ID devuelve `404`. Este borrado elimina únicamente el anuncio, sin borrar ofertas ni otras referencias.
+
+Ambas rutas devuelven `400` para un ID mal formado y `404` para un ID válido inexistente. En PATCH, un precio ausente o inválido devuelve `400`.

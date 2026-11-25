@@ -14,6 +14,8 @@ let db: Db;
 export async function connectDb() {
   await client.connect();
   db = client.db(process.env.DB_NAME ?? "rastro");
+  await db.collection<User>("users").createIndex({ email: 1 }, { unique: true });
+  await db.collection("reviews").createIndex({ "author.id": 1, listingId: 1 }, { unique: true });
   console.log(`Conectado a MongoDB (base de datos ${db.databaseName})`);
 }
 

@@ -5,7 +5,8 @@ import listingsRouter from "./routes/listings";
 import offersRouter from "./routes/offers";
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT ?? 3000);
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:5173";
 
 // 1. Registrar cada petición en la terminal
 app.use((req, _res, next) => {
@@ -14,6 +15,18 @@ app.use((req, _res, next) => {
 });
 
 // 2. Leer bodies JSON
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", CORS_ORIGIN);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(204);
+    return;
+  }
+
+  next();
+});
 app.use(express.json());
 
 // 3. Rutas
